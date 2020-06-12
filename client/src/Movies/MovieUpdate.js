@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import axios from "axios";
 
+
 const initialMovie = {
     id: '',
     title: '',
@@ -9,6 +10,7 @@ const initialMovie = {
     metascore: '',
     stars: [],
 };
+
 
 const MovieUpdate = props => {
   const [movie, setMovie] = useState(initialMovie);
@@ -47,8 +49,15 @@ const MovieUpdate = props => {
     axios
       .put(`http://localhost:5000/api/movies/${movie.id}`, movie)
       .then(res => {
-       setMovie(res.data);
-       push(`/movies/`)
+      //  setMovie(res.data);
+      const newMoviesList = props.movies.map(mv => {
+        if (mv.id === res.data.id) {
+            return res.data
+        }
+        return mv
+    })
+    props.setMovieList(newMoviesList)
+       push(`/`)
       
         })
 

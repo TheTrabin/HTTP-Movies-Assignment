@@ -3,20 +3,33 @@ import axios from "axios";
 import { useParams, useHistory } from "react-router-dom";
 import MovieCard from "./MovieCard";
 
-function Movie({ addToSavedList }) {
+
+function Movie({ addToSavedList, setMovieList }) {
   const { push } = useHistory();
   const [movie, setMovie] = useState(null);
+  
   const params = useParams();
 
   const fetchMovie = (id) => {
     axios
       .get(`http://localhost:5000/api/movies/${id}`)
-      .then((res) => setMovie(res.data))
+      .then((res) => 
+      setMovie(res.data)
+      
+      )
       .catch((err) => console.log(err.response));
   };
 
   const saveMovie = () => {
     addToSavedList(movie);
+  };
+  const getNewList = () => {
+    axios
+      .get("http://localhost:5000/api/movies")
+      .then(res => 
+        setMovieList(res.data)
+        )
+      .catch(err => console.log(err.response));
   };
 
   const handleDelete = e => {
@@ -25,8 +38,10 @@ function Movie({ addToSavedList }) {
       .delete(`http://localhost:5000/api/movies/${params.id}`)
       .then(res => {
         console.log("delete", res.data);
-        this.setMovie({movie: res.data});
-        push(`/movies/`);
+        // this.setMovie({movie: res.data});
+        getNewList();
+        push(`/`);
+        
       })
       .catch(err =>
         console.error("Movie.js: handleDelete: err: ", err.message, err.response)
